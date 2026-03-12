@@ -1,0 +1,41 @@
+pip install crewai
+from crewai import Agent, Task, Crew
+from langchain_openai import ChatOpenAI  # hoặc dùng Ollama để free
+
+# Dùng model cục bộ qua Ollama (không tốn tiền)
+llm = ChatOpenAI(base_url="http://localhost:11434/v1", api_key="ollama", model="llama3.3")
+
+researcher = Agent(
+    role='Nhà nghiên cứu',
+    goal='Tìm thông tin chính xác và mới nhất',
+    backstory='Bạn là chuyên gia tìm kiếm thông tin trên web và tổng hợp',
+    llm=llm,
+    verbose=True
+)
+
+writer = Agent(
+    role='Nhà văn',
+    goal='Viết nội dung hay, mạch lạc bằng tiếng Việt',
+    backstory='Bạn là copywriter chuyên nghiệp',
+    llm=llm,
+    verbose=True
+)
+
+task1 = Task(
+    description='Tìm top 5 xu hướng AI tháng 3/2026',
+    agent=researcher
+)
+
+task2 = Task(
+    description='Viết bài blog 500 từ về các xu hướng đó bằng tiếng Việt',
+    agent=writer
+)
+
+crew = Crew(
+    agents=[researcher, writer],
+    tasks=[task1, task2],
+    verbose=2
+)
+
+result = crew.kickoff()
+print(result)

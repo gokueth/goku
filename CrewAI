@@ -1,4 +1,3 @@
-pip install crewai
 from crewai import Agent, Task, Crew
 from langchain_openai import ChatOpenAI  # hoặc dùng Ollama để free
 
